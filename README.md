@@ -19,7 +19,6 @@ mkdir /home/$user/minecraft-server
 # Start minecraft
 # 1. Accept the eula
 # 2. Map minecraft port to host
-# 3. Map ping port to host
 # 4. Mount volume in container for persistance
 # 5. name of the docker image to use
 
