@@ -42,3 +42,13 @@ kubectl apply -f minecraft.pvc.yaml
 cd helmchart/k8s-minecraft/
 helm install . --name overworld
 ```
+
+As for now, proxy the pod to your host
+```
+kubectl port-forward overworld-k8s-minecraft-0 25565:25565 
+```
+
+# Connecting Minecraft client to our server
+Start minecraft, and create a new server connection. Set the location to localhost and save. 
+
+Later i will use an Ingress Controller for Kubernetes to expose it outside the cluster
