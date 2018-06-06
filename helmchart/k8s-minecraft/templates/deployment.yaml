@@ -1,0 +1,67 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "k8s-minecraft.fullname" . }}
+  labels:
+    app: {{ template "k8s-minecraft.name" . }}
+    chart: {{ template "k8s-minecraft.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ .Release.Name }}
+  replicas: {{ .Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ template "k8s-minecraft.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "k8s-minecraft.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        env:
+        - name: EULA
+          value: "{{ .Values.minecraft.eula }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: {{ .Values.service.name }}
+          containerPort: {{ .Values.service.port }}
+          protocol: TCP
+        {{- if .Values.Resources }}
+        resources:
+          requests:
+            cpu: "{{ .Values.Resources.cpuRequest }}"
+            memory: "{{ .Values.Resources.memoryRequest }}"
+          limits:
+            cpu: "{{ .Values.Resources.cpuLimit }}"
+            memory: "{{ .Values.Resources.memoryLimit }}"
+        {{- end }}
+        volumeMounts:
+        - name: {{ .Values.Persistence.VolumeName }}
+          mountPath: {{ .Values.Persistence.MountPath }}
+      securityContext:
+        fsGroup: {{ .Values.SecurityContext }}
+      volumes:
+      - name: {{ .Values.Persistence.VolumeName }}
+      {{- if .Values.Persistence.Enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.Persistence.ExistingClaim | default .Values.Persistence.VolumeName }}
+      {{- else }}
+          emptyDir: {}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+    nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+    affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+    tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minecraft-pv
+  labels:
+    app: minecraft
+    appid: portal
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: nfs-server.example.com
+    path: /home/nfsshare/minecraft
+  storageClassName: standard

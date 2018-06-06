@@ -1,0 +1,63 @@
+# Default values for k8s-minecraft.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: "hoeghh/minecraft"
+  tag: "1.12.2"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 25565
+  name: minecraft
+  
+minecraft:
+  eula: true
+
+ingress:
+  enabled: true
+  annotations: {}
+  path: /
+  port: "25565"
+  hosts:
+    - minecraft.example.com
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+SecurityContext: 1000
+
+Persistence:
+  Enabled: true
+  MountPath: "/minecraft-data/"
+  VolumeName: "minecraftdata"
+  # define volume claim. This is only considered if Enabled is set to true above
+  # If you have an existing volume claim, add it's name in ExistingClaim 
+  # A new PVC will be created if enabled is set to true and ExistingClaim is set to ""
+  ExistingClaim: "portal-minecraft"
+#  VolumeClaimTemplates:
+#    AccessModes: ReadWriteOnce
+#    Storage: 2Gi
+#    StorageClassName: standard
+#    Selector:
+#      Enabled: true
+#      MatchLabels: 
+#        app: minecraft
+#        appid: portal
+
+Resources: 
+  cpuRequest: 1000m
+  cpuLimit: 2000m
+  memoryRequest: 1024Mi
+  memoryLimit: 1512Mi  
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,24 @@
+{{- if and .Values.Persistence.Enabled (not .Values.Persistence.ExistingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.Persistence.VolumeName }}
+  labels:
+    app: {{ template "k8s-minecraft.name" . }}
+    chart: {{ template "k8s-minecraft.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  accessModes: [ {{ .Values.Persistence.VolumeClaimTemplates.AccessModes | quote }} ]
+  resources:
+    requests:
+      storage: {{ .Values.Persistence.VolumeClaimTemplates.Storage | quote }}
+  storageClassName: {{ .Values.Persistence.VolumeClaimTemplates.StorageClassName | quote }}
+  {{- if .Values.Persistence.VolumeClaimTemplates.Selector.Enabled }}
+  selector:
+    matchLabels:
+      {{- range $key,$value := .Values.Persistence.VolumeClaimTemplates.Selector.MatchLabels }}
+      {{ $key }} : {{ $value }}
+      {{- end }}
+    {{- end }}      
+{{- end -}}
