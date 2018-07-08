@@ -52,3 +52,6 @@ kubectl port-forward overworld-k8s-minecraft-0 25565:25565
 Start minecraft, and create a new server connection. Set the location to localhost and save. 
 
 Later i will use an Ingress Controller for Kubernetes to expose it outside the cluster
+
+# A sample world
+I have added a sample world with a small house and some kubernetes paintings. Just unzip it and place it in the volume.
