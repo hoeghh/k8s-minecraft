@@ -11,9 +11,7 @@ VOLUME ["/minecraft-data"]
 EXPOSE 25565
 EXPOSE 33434
 
-#WORKDIR /home/minecraft
-
-ENV VERSION "1.12.2"
+RUN chown -R 1000:1000 /minecraft-data
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
